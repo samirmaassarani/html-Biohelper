@@ -4,7 +4,16 @@
     <title>My Flask App</title>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p><a href="/input">Enter a sequence</a></p>
+    <h1>Bio analyser</h1>
+    <p> Enter a sequence to analyse:</p>
+    <form>
+    <input type="text" id="sequence" name="sequence" required><br><br>
+    <input type="submit" value="Submit">
+    </form>
 </body>
+<body>
+    <h2>Your Sequence</h2>
+    <p>The sequence is: <strong>{{ print }}</strong></p>
+</body>
+
 </html>
