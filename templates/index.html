@@ -1,19 +1,171 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Flask App</title>
+    <title>Bio Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .green-box {
+            background-color: #228B22;
+            height: 100px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #228B22;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #1a6d1a;
+        }
+        .checkbox-group {
+            margin: 15px 0;
+        }
+        .checkbox-label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+        .results-section {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .sequence-display {
+            font-family: monospace;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .plot-image {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #228B22;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bio analyser</h1>
-    <p> Enter a sequence to analyse:</p>
-    <form>
-    <input type="text" id="sequence" name="sequence" required><br><br>
-    <input type="submit" value="Submit">
-    </form>
-</body>
-<body>
-    <h2>Your Sequence</h2>
-    <p>The sequence is: <strong>{{ print }}</strong></p>
-</body>
+    <div class="green-box">
+        <div class="container">
+            <h1>Bio Helper</h1>
+        </div>
+    </div>
 
+    <div class="container">
+        <div class="form-section">
+            <h2>Enter a DNA sequence to analyze:</h2>
+            <form method="POST" action="/">
+                <input type="text"
+                       id="sequence"
+                       name="sequence"
+                       placeholder="Enter DNA sequence (e.g., ATCGATCG)"
+                       required>
+
+                <div class="checkbox-group">
+                    <h3>Analysis Options:</h3>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="complement" value="1">
+                        Complement Sequence
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="fasta" value="1">
+                        FASTA Format
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="gc_content" value="1">
+                        GC Content Analysis
+                    </label>
+                </div>
+
+                <input type="submit" value="Analyze Sequence">
+            </form>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+        </div>
+
+        {% if sequence %}
+        <div class="results-section">
+            <h2>Analysis Results</h2>
+
+            <p><strong>Original Sequence:</strong></p>
+            <div class="sequence-display">{{ sequence }}</div>
+
+            <p><strong>Length:</strong> {{ sequence|length }} bases</p>
+
+            {% if do_complement and complement %}
+            <p><strong>Complement Sequence:</strong></p>
+            <div class="sequence-display">{{ complement }}</div>
+            {% endif %}
+
+            {% if do_gc %}
+            <h3>GC Content Analysis</h3>
+            <p>G count: {{ g_count }}</p>
+            <p>C count: {{ c_count }}</p>
+            <p>Total GC content: {{ gc_count }} ({{ "%.2f"|format(gc_percent) }}%)</p>
+            <img src="data:image/png;base64,{{ gc_plot }}" class="plot-image" alt="GC Content Plot">
+            {% endif %}
+
+            {% if do_fasta and fasta %}
+            <h3>FASTA Format</h3>
+            <div class="sequence-display">{{ fasta }}</div>
+            <a href="/download?fasta={{ fasta|urlencode }}" class="download-btn">
+                Download FASTA File
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
 </html>
