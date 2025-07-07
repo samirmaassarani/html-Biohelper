@@ -1,2 +1,2 @@
 # html-Biohelper
-an html page that allows faster access to complements and fasta format for sequences 
+A tool or web application that includes DNA sequences analysis tools. The interface enables to easily amplify complementary DNA strands as well as format the sequences in FASTA format. The program will scan to see if the user typed a DNA sequence (checks invalid characters), and the program counts the sequence statistics such as GC content, and plots out the base composition in a graph. Other forms Users may also retrieve their sequences in standard FASTA form with the adjustable headers.
